@@ -10,7 +10,7 @@
 #include "CodeGen/TargetBuilder.h"
 
 #ifdef DEBUG
-#include "ASTPrinter.h"
+#include "TreePrinter.h"
 #endif // DEBUG
 
 // #define SW_AST_DESTRUCTOR_LOG defined(DEBUG)
@@ -24,7 +24,7 @@ namespace Bunny {
             virtual ~Node() = 0;
             virtual void GenerateCode(TargetBuilder &targetBuilder) const = 0;
 #ifdef DEBUG
-            virtual void Print(ASTPrinter &printer) const = 0;
+            virtual void Print(TreePrinter &printer) const = 0;
 #endif // DEBUG
         };
 
@@ -42,7 +42,7 @@ namespace Bunny {
     virtual void GenerateCode(TargetBuilder &targetBuilder) const;  \
 
 #define _AST_CONCRETE_NODE_HEADER_DEBUG(type)                        \
-    virtual void Print(ASTPrinter &printer) const;                  \
+    virtual void Print(TreePrinter &printer) const;                  \
 
 #ifdef DEBUG
 
@@ -67,7 +67,7 @@ void type::GenerateCode(TargetBuilder &targetBuilder) const { assert(false); }
 #ifdef DEBUG
 
 #define AST_NODE_DEFINE_DUMMY_Print(type) \
-void type::Print(ASTPrinter &printer) const { assert(false); }
+void type::Print(TreePrinter &printer) const { assert(false); }
 
 #else // DEBUG
 

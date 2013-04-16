@@ -21,16 +21,15 @@ static const char *UnaryOperatorName(UnaryOperator oper)
     }
 }
 
-void UnaryExpression::Print(ASTPrinter &printer) const
+void UnaryExpression::Print(TreePrinter &printer) const
 {
     std::ostringstream sstm;
     sstm << "UnaryExpression(" << UnaryOperatorName(m_oper) << "):";
-    printer.PrintLine(sstm.str());
-    printer.BeginScope();
+    printer.StartNode(sstm.str());
     {
         m_exprChild->Print(printer);
     }
-    printer.EndScope();
+    printer.EndNode();
 }
 #endif // DEBUG
 

@@ -45,17 +45,16 @@ static const char *BinaryOperatorName(BinaryOperator oper)
     }
 }
 
-void BinaryExpression::Print(RefASTPrinter printer) const
+void BinaryExpression::Print(RefTreePrinter printer) const
 {
     std::ostringstream sstm;
     sstm << "BinaryExpression(" << BinaryOperatorName(m_oper) << "):";
-    printer.PrintLine(sstm.str());
-    printer.BeginScope();
+    printer.StartNode(sstm.str());
     {
         m_exprLeft->Print(printer);
         m_exprRight->Print(printer);
     }
-    printer.EndScope();
+    printer.EndNode();
 }
 #endif // DEBUG
 

@@ -69,7 +69,7 @@ Expression
 
 int main()
 {
-    SPASTPrinter pprinter(new ASTPrinter());
+    SPTreePrinter pprinter(new SimpleTreePrinter());
     yyparse();
     program->Print(*pprinter);
 
