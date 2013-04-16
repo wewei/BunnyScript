@@ -15,6 +15,7 @@
 
 Integer     [1-9][0-9]*
 Float       {Integer}?\.[0-9]+
+Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 %%
 0           {
@@ -70,6 +71,13 @@ Float       {Integer}?\.[0-9]+
 "true"      {
             yylval.astBooleanExpression = new BooleanExpression(true);
             return BOOLEAN;
+            }
+
+"."         { return DOT; }
+
+{Identifier}    {
+            yylval.astString = new String(yytext);
+            return IDENTIFIER;
             }
 
 \"          {

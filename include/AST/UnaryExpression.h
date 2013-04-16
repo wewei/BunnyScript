@@ -22,7 +22,7 @@ namespace Bunny {
                 , m_oper(oper)
             { }
 
-            UnaryOperator Operator() { return m_oper; }
+            UnaryOperator Operator() const { return m_oper; }
             const SPExpressionC &ChildExpression() const { return m_exprChild; }
 
         private:

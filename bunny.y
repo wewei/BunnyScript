@@ -14,6 +14,7 @@ SPNodeC program;
 %}
 
 %union {
+    PStringC                astString;
     PNodeC                  astNode;
     PExpressionC            astExpression;
     PBooleanExpressionC     astBooleanExpression;
@@ -22,20 +23,26 @@ SPNodeC program;
     PStringExpressionC      astStringExpression;
     PUnaryExpressionC       astUnaryExpression;
     PBinaryExpressionC      astBinaryExpression;
+    PNamedExpressionC       astNamedExpression;
+    PNameC                  astName;
 }
 
-%token <astIntegerExpression> INTEGER
-%token <astFloatExpression> FLOAT
-%token <astBooleanExpression> BOOLEAN
-%token <astStringExpression> STRING
+%token <astIntegerExpression>   INTEGER
+%token <astFloatExpression>     FLOAT
+%token <astBooleanExpression>   BOOLEAN
+%token <astStringExpression>    STRING
+%token <astString>              IDENTIFIER
 %token ADD MINUS MULTIPLY DIVIDE POWER
 %token LT LE GT GE EQ NE
 %token NOT AND OR XOR
+%token DOT
 
 %type <astExpression>       Program
 %type <astExpression>       Expression
 %type <astBinaryExpression> BinaryExpression
 %type <astUnaryExpression>  UnaryExpression
+%type <astNamedExpression>  NamedExpression
+%type <astName>             Name
 
 %left OR
 %left XOR
@@ -67,6 +74,8 @@ Expression
     | BinaryExpression
         { $$ = $1; }
     | UnaryExpression
+        { $$ = $1; }
+    | NamedExpression
         { $$ = $1; }
     | '(' Expression ')'
         { $$ = $2; }
@@ -107,6 +116,15 @@ UnaryExpression
     | NOT Expression
         { $$ = new UnaryExpression(SPExpressionC($2), UO_NOT); }
 
+NamedExpression
+    : Name
+        { $$ = new NamedExpression(SPNameC($1)); }
+
+Name
+    : IDENTIFIER
+        { $$ = new Name(SPStringC($1), SPNameC()); }
+    | IDENTIFIER DOT Name
+        { $$ = new Name(SPStringC($1), SPNameC($3)); }
 %%
 
 int main()
