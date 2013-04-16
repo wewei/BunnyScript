@@ -14,9 +14,6 @@ SPNodeC program;
 %}
 
 %union {
-    int                     ival;
-    double                  fval;
-    
     PNodeC                  astNode;
     PExpressionC            astExpression;
     PBooleanExpressionC     astBooleanExpression;
@@ -27,16 +24,26 @@ SPNodeC program;
     PBinaryExpressionC      astBinaryExpression;
 }
 
-%token <ival> INTEGER
-%token <fval> FLOAT
+%token <astIntegerExpression> INTEGER
+%token <astFloatExpression> FLOAT
+%token <astBooleanExpression> BOOLEAN
+%token LT LE GT GE EQ NE
+%token NOT AND OR XOR
 
-%type <astExpression> Expression
-%type <astExpression> Program
+%type <astExpression>       Program
+%type <astExpression>       Expression
+%type <astBinaryExpression> BinaryExpression
+%type <astUnaryExpression>  UnaryExpression
 
+%left OR
+%left XOR
+%left AND
+%left EQ NE
+%left LT LE GT GE
 %left '+' '-'
 %left '*' '/'
 %left '^'
-%left UMINUS
+%left NOT UMINUS
 
 %start Program
 
@@ -47,10 +54,20 @@ Program
 
 Expression
     : INTEGER
-        { $$ = new IntegerExpression($1); }
+        { $$ = $1; }
     | FLOAT
-        { $$ = new FloatExpression($1); }
-    | Expression '+' Expression
+        { $$ = $1; }
+    | BOOLEAN
+        { $$ = $1; }
+    | BinaryExpression
+        { $$ = $1; }
+    | UnaryExpression
+        { $$ = $1; }
+    | '(' Expression ')'
+        { $$ = $2; }
+
+BinaryExpression
+    : Expression '+' Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_ADD); }
     | Expression '-' Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_MINUS); }
@@ -60,10 +77,30 @@ Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_DIVIDE); }
     | Expression '^' Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_POWER); }
-    | '(' Expression ')'
-        { $$ = $2; }
-    | '-' Expression %prec UMINUS
+    | Expression LT Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_LT); }
+    | Expression LE Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_LE); }
+    | Expression GT Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_GT); }
+    | Expression GE Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_GE); }
+    | Expression EQ Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_EQ); }
+    | Expression NE Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_NE); }
+    | Expression AND Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_AND); }
+    | Expression OR Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_OR); }
+    | Expression XOR Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_XOR); }
+
+UnaryExpression
+    : '-' Expression %prec UMINUS
         { $$ = new UnaryExpression(SPExpressionC($2), UO_NEG); }
+    | '!' Expression
+        { $$ = new UnaryExpression(SPExpressionC($2), UO_NOT); }
 
 %%
 
