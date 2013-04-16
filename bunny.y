@@ -27,6 +27,7 @@ SPNodeC program;
 %token <astIntegerExpression> INTEGER
 %token <astFloatExpression> FLOAT
 %token <astBooleanExpression> BOOLEAN
+%token ADD MINUS MULTIPLY DIVIDE POWER
 %token LT LE GT GE EQ NE
 %token NOT AND OR XOR
 
@@ -38,12 +39,13 @@ SPNodeC program;
 %left OR
 %left XOR
 %left AND
+%left NOT
 %left EQ NE
 %left LT LE GT GE
-%left '+' '-'
-%left '*' '/'
-%left '^'
-%left NOT UMINUS
+%left ADD MINUS
+%left MULTIPLY DIVIDE
+%left POWER
+%left UMINUS
 
 %start Program
 
@@ -67,15 +69,15 @@ Expression
         { $$ = $2; }
 
 BinaryExpression
-    : Expression '+' Expression
+    : Expression ADD Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_ADD); }
-    | Expression '-' Expression
+    | Expression MINUS Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_MINUS); }
-    | Expression '*' Expression
+    | Expression MULTIPLY Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_MULTIPLY); }
-    | Expression '/' Expression
+    | Expression DIVIDE Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_DIVIDE); }
-    | Expression '^' Expression
+    | Expression POWER Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_POWER); }
     | Expression LT Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_LT); }
@@ -97,9 +99,9 @@ BinaryExpression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_XOR); }
 
 UnaryExpression
-    : '-' Expression %prec UMINUS
+    : MINUS Expression %prec UMINUS
         { $$ = new UnaryExpression(SPExpressionC($2), UO_NEG); }
-    | '!' Expression
+    | NOT Expression
         { $$ = new UnaryExpression(SPExpressionC($2), UO_NOT); }
 
 %%

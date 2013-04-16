@@ -10,7 +10,6 @@
 
 Integer     [1-9][0-9]*
 Float       {Integer}?\.[0-9]+
-ArithOper   [\+\-*/()^]
 
 %%
 0           {
@@ -28,7 +27,15 @@ ArithOper   [\+\-*/()^]
             return FLOAT;
             }
 
-{ArithOper} { return *yytext; }
+"+"         { return ADD; }
+
+"-"         { return MINUS; }
+
+"*"         { return MULTIPLY; }
+
+"/"         { return DIVIDE; }
+
+"^"         { return POWER; }
 
 "<"         { return LT; }
 
