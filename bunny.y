@@ -69,7 +69,10 @@ Expression
 
 int main()
 {
+    SPASTPrinter pprinter(new ASTPrinter());
     yyparse();
+    program->Print(*pprinter);
+
     return 0;
 }
 

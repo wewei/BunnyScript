@@ -16,8 +16,16 @@
     typedef UniquePtr<const type> UP##type##C;  \
     typedef type * P##type;                     \
     typedef const type * P##type##C;            \
+    typedef type & Ref##type;                   \
+    typedef const type & Ref##type##C;          \
 
 
 typedef std::string String;
 DEFINE_PTRS(String)
+
+inline SPString SPSTR(const char *str) { return SPString(new String(str)); }
+
+typedef std::ostream OStream;
+DEFINE_PTRS(OStream)
+
 

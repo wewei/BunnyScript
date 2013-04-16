@@ -37,11 +37,11 @@ namespace Bunny {
         public:
             AST_CONCRETE_NODE_HEADER(FloatExpression)
 
-            FloatExpression(double fltValue) : m_fltValue(fltValue) { }
-            double FloatValue() { return m_fltValue; }
+            FloatExpression(double fltValue) : m_floatValue(fltValue) { }
+            double FloatValue() { return m_floatValue; }
 
         private:
-            double m_fltValue;
+            double m_floatValue;
         };
 
         DEFINE_PTRS(FloatExpression)

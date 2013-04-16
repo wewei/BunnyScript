@@ -13,7 +13,8 @@
 #include "ASTPrinter.h"
 #endif // DEBUG
 
-#define SW_AST_DESTRUCTOR_LOG defined(DEBUG)
+// #define SW_AST_DESTRUCTOR_LOG defined(DEBUG)
+#define SW_AST_DESTRUCTOR_LOG 0
 
 namespace Bunny {
     namespace AST {
