@@ -53,7 +53,7 @@ AST_NODE_DEFINE_DUMMY_GenerateCode(StringExpression)
 void StringExpression::Print(RefTreePrinter printer) const
 {
     std::ostringstream sstm;
-    sstm << "StringExpression(" << m_strValue << ")";
+    sstm << "StringExpression(\"" << *m_strValue << "\")";
     printer.AddLeafNode(sstm.str());
 }
 #endif // DEBUG

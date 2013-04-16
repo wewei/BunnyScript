@@ -6,7 +6,12 @@
 
     #include "bunny.tab.h"
     
+    static SPString stringBuffer;
+    extern int yyerror(const char *);
+
 }
+
+%x X_STR
 
 Integer     [1-9][0-9]*
 Float       {Integer}?\.[0-9]+
@@ -67,6 +72,51 @@ Float       {Integer}?\.[0-9]+
             return BOOLEAN;
             }
 
+\"          {
+            stringBuffer.reset(new String());
+            BEGIN(X_STR);
+            }
 
 [:space:]
+
+<X_STR>\"   {
+            yylval.astStringExpression = new StringExpression(stringBuffer);
+            stringBuffer.reset();
+            BEGIN(INITIAL);
+            return STRING;
+            }
+
+<X_STR>\n   {
+            yyerror("Unterminated String.");
+            }
+
+<X_STR>\\[0-7]{1,3}     {
+            int result = 0;
+
+            for (char *p = yytext + 1; *p != 0; p ++) {
+                result <<= 3;
+                result |= *p - '0';
+            }
+
+            if ( result > 0xff )
+                yyerror("Unrecognized charector.");
+
+            *stringBuffer += (char)result;
+            }
+
+<X_STR>\\[0-9]+     {
+            yyerror("Unrecognized charector.");
+            }
+
+<X_STR>\\n  *stringBuffer += '\n';
+<X_STR>\\t  *stringBuffer += '\t';
+<X_STR>\\r  *stringBuffer += '\r';
+<X_STR>\\b  *stringBuffer += '\b';
+<X_STR>\\f  *stringBuffer += '\f';
+
+<X_STR>\\(.|\n)  *stringBuffer = yytext[1];
+
+<X_STR>[^\\\n\"]+   {
+            *stringBuffer += yytext;
+            }
 

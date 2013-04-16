@@ -27,6 +27,7 @@ SPNodeC program;
 %token <astIntegerExpression> INTEGER
 %token <astFloatExpression> FLOAT
 %token <astBooleanExpression> BOOLEAN
+%token <astStringExpression> STRING
 %token ADD MINUS MULTIPLY DIVIDE POWER
 %token LT LE GT GE EQ NE
 %token NOT AND OR XOR
@@ -60,6 +61,8 @@ Expression
     | FLOAT
         { $$ = $1; }
     | BOOLEAN
+        { $$ = $1; }
+    | STRING
         { $$ = $1; }
     | BinaryExpression
         { $$ = $1; }

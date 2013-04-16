@@ -50,6 +50,7 @@ namespace Bunny {
         public:
             AST_CONCRETE_NODE_HEADER(StringExpression)
 
+            StringExpression(SPStringC strValue) : m_strValue(strValue) { }
             StringExpression(const char *cstrValue);
             const SPStringC &StringValue() { return m_strValue; }
 
