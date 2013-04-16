@@ -11,3 +11,9 @@ Makefile.in
 /depcomp
 /install-sh
 /missing
+
+bunny
+bunny.tab.c
+bunny.tab.h
+lex.yy.c
+test_*
