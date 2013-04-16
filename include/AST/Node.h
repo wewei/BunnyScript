@@ -27,7 +27,10 @@ namespace Bunny {
 #endif // DEBUG
         };
 
+        DEFINE_PTRS(Node)
+
         inline Node::~Node() { }
+
     };
 };
 
@@ -67,7 +70,7 @@ void type::Print(ASTPrinter &printer) const { assert(false); }
 
 #else // DEBUG
 
-#define AST_NODE_DEFINE_DUMMY_Print
+#define AST_NODE_DEFINE_DUMMY_Print(type)
 
 #endif // DEBUG
 

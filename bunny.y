@@ -1,43 +1,69 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <iostream>
+#include <cstdlib>
+
+#include "AST/AST.h"
+
+using namespace Bunny::AST;
+
+extern int yylex(void);
+extern int yyerror(const char *);
+
+SPNodeC program;
+
 %}
 
 %union {
-    int ival;
-    float fval;
+    int                     ival;
+    double                  fval;
+    
+    PNodeC                  astNode;
+    PExpressionC            astExpression;
+    PBooleanExpressionC     astBooleanExpression;
+    PIntegerExpressionC     astIntegerExpression;
+    PFloatExpressionC       astFloatExpression;
+    PStringExpressionC      astStringExpression;
+    PUnaryExpressionC       astUnaryExpression;
+    PBinaryExpressionC      astBinaryExpression;
 }
 
 %token <ival> INTEGER
 %token <fval> FLOAT
-%token <fval> UMINUS
 
-%type <fval> Expr
-%type <fval> Num
-%type <fval> ExprStart
+%type <astExpression> Expression
+%type <astExpression> Program
 
 %left '+' '-'
 %left '*' '/'
 %left '^'
 %left UMINUS
 
-%start ExprStart
+%start Program
 
 %%
-ExprStart: Expr { printf("%f\n", $$); } 
+Program
+    : Expression
+        { program = SPExpressionC($1); } 
 
-Num : INTEGER  { $$ = $1; }
-    | FLOAT { $$ = $1; }
-
-Expr : Num { $$ = $1; }
-     | Expr '+' Expr { $$ = $1 + $3; }
-     | Expr '-' Expr { $$ = $1 - $3; }
-     | Expr '*' Expr { $$ = $1 * $3; }
-     | Expr '/' Expr { $$ = $1 / $3; }
-     | Expr '^' Expr { $$ = pow($1, $3); }
-     | '(' Expr ')' { $$ = $2; }
-     | '-' Expr %prec UMINUS { $$ = -$2; }
+Expression
+    : INTEGER
+        { $$ = new IntegerExpression($1); }
+    | FLOAT
+        { $$ = new FloatExpression($1); }
+    | Expression '+' Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_ADD); }
+    | Expression '-' Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_MINUS); }
+    | Expression '*' Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_MULTIPLY); }
+    | Expression '/' Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_DIVIDE); }
+    | Expression '^' Expression
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_POWER); }
+    | '(' Expression ')'
+        { $$ = $2; }
+    | '-' Expression %prec UMINUS
+        { $$ = new UnaryExpression(SPExpressionC($2), UO_NEG); }
 
 %%
 
@@ -49,7 +75,7 @@ int main()
 
 int yyerror(const char *s)
 {
-    printf("%s", s);
+    std::cout<< s << std::endl;
     exit(-1);
 }
 

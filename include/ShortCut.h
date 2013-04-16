@@ -14,6 +14,8 @@
     typedef WeakPtr<const type> WP##type##C;    \
     typedef UniquePtr<type> UP##type;           \
     typedef UniquePtr<const type> UP##type##C;  \
+    typedef type * P##type;                     \
+    typedef const type * P##type##C;            \
 
 
 typedef std::string String;

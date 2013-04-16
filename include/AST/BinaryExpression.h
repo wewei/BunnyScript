@@ -10,6 +10,7 @@ namespace Bunny {
             BO_MINUS,
             BO_MULTIPLY,
             BO_DIVIDE,
+            BO_POWER,
 
             // Comparator
             BO_LT,

@@ -1,6 +1,11 @@
 %option noyywrap
+
 %top {
+    #include "AST/AST.h"
+    using namespace Bunny::AST;
+
     #include "bunny.tab.h"
+    
 }
 
 Integer [1-9][0-9]*
