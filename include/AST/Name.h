@@ -12,17 +12,13 @@ namespace Bunny {
         public:
             AST_CONCRETE_NODE_HEADER(Name)
 
-            Name(const SPStringC &strValue, const SPNameC &subname)
+            Name(const SPStringC &strValue)
                 : m_strValue(strValue)
-                , m_subname(subname)
-            { }
-
+                { }
 
             const SPStringC &StringValue() const { return m_strValue; }
-            const SPNameC &Subname() const { return m_subname; }
 
         private:
-            SPNameC m_subname;
             SPStringC m_strValue; 
         };
     }

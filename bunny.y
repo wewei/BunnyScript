@@ -23,7 +23,7 @@ SPNodeC program;
     PStringExpressionC      astStringExpression;
     PUnaryExpressionC       astUnaryExpression;
     PBinaryExpressionC      astBinaryExpression;
-    PNamedExpressionC       astNamedExpression;
+    PMemberExpressionC      astMemberExpression;
     PCallExpressionC        astCallExpression;
     PAsyncExpressionC       astAsyncExpression;
     PNameC                  astName;
@@ -48,7 +48,7 @@ SPNodeC program;
 %type <astExpression>       Expression
 %type <astBinaryExpression> BinaryExpression
 %type <astUnaryExpression>  UnaryExpression
-%type <astNamedExpression>  NamedExpression
+%type <astMemberExpression> MemberExpression
 %type <astCallExpression>   CallExpression
 %type <astAsyncExpression>  AsyncExpression
 %type <astName>             Name
@@ -63,8 +63,8 @@ SPNodeC program;
 %left   ADD MINUS
 %left   MULTIPLY DIVIDE
 %left   POWER
-%right  UMINUS ASYNC
-%left   PAR_L PAR_R DOT
+%right  UMINUS
+%left   PAR_L PAR_R DOT ASYNC
 
 %start Program
 
@@ -86,7 +86,7 @@ Expression
         { $$ = $1; }
     | UnaryExpression
         { $$ = $1; }
-    | NamedExpression
+    | MemberExpression
         { $$ = $1; }
     | CallExpression
         { $$ = $1; }
@@ -131,9 +131,11 @@ UnaryExpression
     | NOT Expression
         { $$ = new UnaryExpression(SPExpressionC($2), UO_NOT); }
 
-NamedExpression
+MemberExpression
     : Name
-        { $$ = new NamedExpression(SPNameC($1)); }
+        { $$ = new MemberExpression(SPExpressionC(), SPNameC($1)); }
+    | Expression DOT Name
+        { $$ = new MemberExpression(SPExpressionC($1), SPNameC($3)); }
 
 CallExpression
     : Expression PAR_L PAR_R
@@ -142,14 +144,12 @@ CallExpression
         { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC($3)); }
 
 AsyncExpression
-    : ASYNC Expression
-        { $$ = new AsyncExpression(SPExpressionC($2)); }
+    : ASYNC PAR_L Expression PAR_R
+        { $$ = new AsyncExpression(SPExpressionC($3)); }
 
 Name
     : IDENTIFIER
-        { $$ = new Name(SPStringC($1), SPNameC()); }
-    | IDENTIFIER DOT Name
-        { $$ = new Name(SPStringC($1), SPNameC($3)); }
+        { $$ = new Name(SPStringC($1)); }
 
 ArgumentList
     : Expression

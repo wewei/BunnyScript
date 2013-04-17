@@ -4,7 +4,6 @@
 
 #include "ShortCut.h"
 #include "Expression.h"
-#include "Name.h"
 
 namespace Bunny {
     namespace AST {
@@ -60,19 +59,6 @@ namespace Bunny {
         };
 
         DEFINE_PTRS(StringExpression)
-
-        class NamedExpression : public Expression {
-        public:
-            AST_CONCRETE_NODE_HEADER(NamedExpression)
-
-            NamedExpression(SPNameC name) : m_name(name) { }
-
-            const SPNameC &Name() { return m_name; }
-        private:
-            SPNameC m_name;
-        };
-
-        DEFINE_PTRS(NamedExpression)
 
     }
 }

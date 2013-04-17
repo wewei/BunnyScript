@@ -14,11 +14,7 @@ void Name::Print(TreePrinter &printer) const
 {
     std::ostringstream sstm;
     sstm << "Name(" << *m_strValue << ")";
-    printer.StartNode(sstm.str());
-    if (m_subname) {
-        m_subname->Print(printer);
-    }
-    printer.EndNode();
+    printer.AddLeafNode(sstm.str());
 }
 
 #endif // DEBUG

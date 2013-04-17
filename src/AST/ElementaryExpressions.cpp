@@ -58,18 +58,3 @@ void StringExpression::Print(RefTreePrinter printer) const
 }
 #endif // DEBUG
 
-AST_NODE_DEFAULT_DESTRUCTOR(NamedExpression)
-
-AST_NODE_DEFINE_DUMMY_GenerateCode(NamedExpression)
-
-#ifdef DEBUG
-void NamedExpression::Print(RefTreePrinter printer) const
-{
-    printer.StartNode(String("NamedExpression:"));
-    {
-        m_name->Print(printer);
-    }
-    printer.EndNode();
-}
-#endif // DEBUG
-
