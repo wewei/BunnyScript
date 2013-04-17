@@ -75,6 +75,20 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "."         { return DOT; }
 
+","         { return COMMA; }
+
+"("         { return PAR_L; }
+
+")"         { return PAR_R; }
+
+"["         { return BRT_L; }
+
+"]"         { return BRT_R; }
+
+"{"         { return BRC_L; }
+
+"}"         { return BRC_R; }
+
 {Identifier}    {
             yylval.astString = new String(yytext);
             return IDENTIFIER;

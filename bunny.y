@@ -24,7 +24,9 @@ SPNodeC program;
     PUnaryExpressionC       astUnaryExpression;
     PBinaryExpressionC      astBinaryExpression;
     PNamedExpressionC       astNamedExpression;
+    PCallExpressionC        astCallExpression;
     PNameC                  astName;
+    PArgumentListC          astArgumentList;
 }
 
 %token <astIntegerExpression>   INTEGER
@@ -35,14 +37,19 @@ SPNodeC program;
 %token ADD MINUS MULTIPLY DIVIDE POWER
 %token LT LE GT GE EQ NE
 %token NOT AND OR XOR
-%token DOT
+%token DOT COMMA
+%token PAR_L PAR_R
+%token BRT_L BRT_R
+%token BRC_L BRC_R
 
 %type <astExpression>       Program
 %type <astExpression>       Expression
 %type <astBinaryExpression> BinaryExpression
 %type <astUnaryExpression>  UnaryExpression
 %type <astNamedExpression>  NamedExpression
+%type <astCallExpression>   CallExpression
 %type <astName>             Name
+%type <astArgumentList>     ArgumentList
 
 %left OR
 %left XOR
@@ -54,6 +61,7 @@ SPNodeC program;
 %left MULTIPLY DIVIDE
 %left POWER
 %left UMINUS
+%left PAR_L PAR_R DOT
 
 %start Program
 
@@ -77,7 +85,9 @@ Expression
         { $$ = $1; }
     | NamedExpression
         { $$ = $1; }
-    | '(' Expression ')'
+    | CallExpression
+        { $$ = $1; }
+    | PAR_L Expression PAR_R
         { $$ = $2; }
 
 BinaryExpression
@@ -120,11 +130,23 @@ NamedExpression
     : Name
         { $$ = new NamedExpression(SPNameC($1)); }
 
+CallExpression
+    : Expression PAR_L PAR_R
+        { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC(new ArgumentList())); }
+    | Expression PAR_L ArgumentList PAR_R
+        { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC($3)); }
+
 Name
     : IDENTIFIER
         { $$ = new Name(SPStringC($1), SPNameC()); }
     | IDENTIFIER DOT Name
         { $$ = new Name(SPStringC($1), SPNameC($3)); }
+
+ArgumentList
+    : Expression
+        { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC(new ArgumentList())); }
+    | Expression COMMA ArgumentList
+        { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC($3)); }
 %%
 
 int main()
