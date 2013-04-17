@@ -63,6 +63,8 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "xor"       { return XOR; }
 
+"async"     { return ASYNC; }
+
 "false"     {
             yylval.astBooleanExpression = new BooleanExpression(false);
             return BOOLEAN;

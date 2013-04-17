@@ -25,6 +25,7 @@ SPNodeC program;
     PBinaryExpressionC      astBinaryExpression;
     PNamedExpressionC       astNamedExpression;
     PCallExpressionC        astCallExpression;
+    PAsyncExpressionC       astAsyncExpression;
     PNameC                  astName;
     PArgumentListC          astArgumentList;
 }
@@ -41,6 +42,7 @@ SPNodeC program;
 %token PAR_L PAR_R
 %token BRT_L BRT_R
 %token BRC_L BRC_R
+%token ASYNC
 
 %type <astExpression>       Program
 %type <astExpression>       Expression
@@ -48,20 +50,21 @@ SPNodeC program;
 %type <astUnaryExpression>  UnaryExpression
 %type <astNamedExpression>  NamedExpression
 %type <astCallExpression>   CallExpression
+%type <astAsyncExpression>  AsyncExpression
 %type <astName>             Name
 %type <astArgumentList>     ArgumentList
 
-%left OR
-%left XOR
-%left AND
-%left NOT
-%left EQ NE
-%left LT LE GT GE
-%left ADD MINUS
-%left MULTIPLY DIVIDE
-%left POWER
-%left UMINUS
-%left PAR_L PAR_R DOT
+%left   OR
+%left   XOR
+%left   AND
+%left   NOT
+%left   EQ NE
+%left   LT LE GT GE
+%left   ADD MINUS
+%left   MULTIPLY DIVIDE
+%left   POWER
+%right  UMINUS ASYNC
+%left   PAR_L PAR_R DOT
 
 %start Program
 
@@ -86,6 +89,8 @@ Expression
     | NamedExpression
         { $$ = $1; }
     | CallExpression
+        { $$ = $1; }
+    | AsyncExpression
         { $$ = $1; }
     | PAR_L Expression PAR_R
         { $$ = $2; }
@@ -135,6 +140,10 @@ CallExpression
         { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC(new ArgumentList())); }
     | Expression PAR_L ArgumentList PAR_R
         { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC($3)); }
+
+AsyncExpression
+    : ASYNC Expression
+        { $$ = new AsyncExpression(SPExpressionC($2)); }
 
 Name
     : IDENTIFIER

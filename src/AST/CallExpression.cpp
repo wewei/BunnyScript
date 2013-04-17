@@ -1,4 +1,3 @@
-#include <sstream>
 #include "AST/CallExpression.h"
 
 using namespace Bunny::AST;

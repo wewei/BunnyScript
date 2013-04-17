@@ -5,4 +5,5 @@
 #include "UnaryExpression.h"
 #include "BinaryExpression.h"
 #include "CallExpression.h"
+#include "AsyncExpression.h"
 
