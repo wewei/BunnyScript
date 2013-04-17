@@ -25,9 +25,11 @@ SPNodeC program;
     PBinaryExpressionC      astBinaryExpression;
     PMemberExpressionC      astMemberExpression;
     PCallExpressionC        astCallExpression;
+    PAssignExpressionC      astAssignExpression;
     PAsyncExpressionC       astAsyncExpression;
     PNameC                  astName;
     PArgumentListC          astArgumentList;
+    PLValueC                astLValue;
 }
 
 %token <astIntegerExpression>   INTEGER
@@ -43,6 +45,7 @@ SPNodeC program;
 %token BRT_L BRT_R
 %token BRC_L BRC_R
 %token ASYNC
+%token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 
 %type <astExpression>       Program
 %type <astExpression>       Expression
@@ -50,10 +53,13 @@ SPNodeC program;
 %type <astUnaryExpression>  UnaryExpression
 %type <astMemberExpression> MemberExpression
 %type <astCallExpression>   CallExpression
+%type <astAssignExpression> AssignExpression
 %type <astAsyncExpression>  AsyncExpression
 %type <astName>             Name
 %type <astArgumentList>     ArgumentList
+%type <astLValue>           LValue
 
+%right  ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %left   OR
 %left   XOR
 %left   AND
@@ -89,6 +95,8 @@ Expression
     | MemberExpression
         { $$ = $1; }
     | CallExpression
+        { $$ = $1; }
+    | AssignExpression
         { $$ = $1; }
     | AsyncExpression
         { $$ = $1; }
@@ -143,6 +151,18 @@ CallExpression
     | Expression PAR_L ArgumentList PAR_R
         { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC($3)); }
 
+AssignExpression
+    : LValue ASSIGN Expression
+        { $$ = new AssignExpression(SPLValueC($1), SPExpressionC($3), AO_ASSIGN); }
+    | LValue ADD_ASSIGN Expression
+        { $$ = new AssignExpression(SPLValueC($1), SPExpressionC($3), AO_ADD_ASSIGN); }
+    | LValue MINUS_ASSIGN Expression
+        { $$ = new AssignExpression(SPLValueC($1), SPExpressionC($3), AO_MINUS_ASSIGN); }
+    | LValue MULTIPLY_ASSIGN Expression
+        { $$ = new AssignExpression(SPLValueC($1), SPExpressionC($3), AO_MULTIPLY_ASSIGN); }
+    | LValue DIVIDE_ASSIGN Expression
+        { $$ = new AssignExpression(SPLValueC($1), SPExpressionC($3), AO_DIVIDE_ASSIGN); }
+
 AsyncExpression
     : ASYNC PAR_L Expression PAR_R
         { $$ = new AsyncExpression(SPExpressionC($3)); }
@@ -156,6 +176,11 @@ ArgumentList
         { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC(new ArgumentList())); }
     | Expression COMMA ArgumentList
         { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC($3)); }
+
+LValue
+    : MemberExpression
+        { $$ = new LValue(SPExpressionC($1)); }
+
 %%
 
 int main()

@@ -55,6 +55,16 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "!="        { return NE; }
 
+"="         { return ASSIGN; }
+
+"+="        { return ADD_ASSIGN; }
+
+"-="        { return MINUS_ASSIGN; }
+
+"*="        { return MULTIPLY_ASSIGN; }
+
+"/="        { return DIVIDE_ASSIGN; }
+
 "not"       { return NOT; }
 
 "and"       { return AND; }
