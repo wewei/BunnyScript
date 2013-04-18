@@ -228,15 +228,6 @@ StatementList
 
 %%
 
-int main()
-{
-    SPTreePrinter pprinter(new SimpleTreePrinter());
-    yyparse();
-    program->Print(*pprinter);
-
-    return 0;
-}
-
 int yyerror(const char *s)
 {
     std::cout<< s << std::endl;

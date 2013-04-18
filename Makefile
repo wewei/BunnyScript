@@ -3,8 +3,8 @@ AST_SOURCES = $(wildcard src/AST/*.cpp)
 
 LEX_FILE = lex.yy.c
 
-bunny : $(LEX_FILE) bunny.tab.c $(AST_SOURCES)
-	g++ -DDEBUG -Iinclude -o bunny $(LEX_FILE) bunny.tab.c $(AST_SOURCES)
+all : test
+
 $(LEX_FILE) : bunny.l bunny.tab.h
 	flex bunny.l
 bunny.tab.h bunny.tab.c : bunny.y
@@ -20,8 +20,8 @@ clean-test: clean-test_ast
 clean-test_ast:
 	rm -f test_ast
 
-test_ast : $(AST_HEADER) test/TestAST.cpp $(AST_SOURCES)
-	g++ -DDEBUG -Iinclude test/TestAST.cpp $(AST_SOURCES) -o $@
+test_ast : $(AST_HEADER) test/AST/TestAST.cpp $(AST_SOURCES) $(LEX_FILE) bunny.tab.c
+	g++ -DDEBUG -Iinclude test/AST/TestAST.cpp $(AST_SOURCES) $(LEX_FILE) bunny.tab.c -o $@
 
-.PHONY : clean test clean-test clean-test_ast
+.PHONY : clean test clean-test clean-test_ast all
 
