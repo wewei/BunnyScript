@@ -8,7 +8,7 @@ AST_NODE_DEFINE_DUMMY_GenerateCode(ExpressionStatement)
 
 void ExpressionStatement::Print(TreePrinter &printer) const
 {
-    printer.StartNode(String("ExpressionStatement"));
+    printer.StartNode(String("ExpressionStatement:"));
     {
         m_expr->Print(printer);
     }
