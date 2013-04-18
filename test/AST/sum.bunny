@@ -3,8 +3,11 @@
     for (i in xrange(0, a.length()))
         sum += a[i];
     i = 0;
-    while (i < b.length())
+    while (i < b.length()) {
+        if (b[i] == 0)
+            break;
         sum += b[i];
+    }
 
     printf("%d", sum);
     if (sum > 100)

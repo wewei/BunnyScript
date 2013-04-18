@@ -95,6 +95,12 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "while"     { return WHILE; }
 
+"break"     { return BREAK; }
+
+"continue"  { return CONTINUE; }
+
+"return"    { return RETURN; }
+
 "."         { return DOT; }
 
 ","         { return COMMA; }

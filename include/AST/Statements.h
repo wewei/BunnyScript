@@ -6,4 +6,6 @@
 #include "IfStatement.h"
 #include "ForStatement.h"
 #include "WhileStatement.h"
+#include "BreakStatement.h"
+#include "ContinueStatement.h"
 

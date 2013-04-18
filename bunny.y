@@ -37,6 +37,8 @@ SPNodeC program;
     PIfStatementC           astIfStatement;
     PForStatementC          astForStatement;
     PWhileStatementC        astWhileStatement;
+    PBreakStatementC        astBreakStatement;
+    PContinueStatementC     astContinueStatement;
 
     // Misc
     PNameC                  astName;
@@ -61,7 +63,7 @@ SPNodeC program;
 %token ASYNC
 %token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %token COLON SEMICOLON
-%token IF ELSE WHILE FOR IN
+%token IF ELSE WHILE FOR IN BREAK CONTINUE RETURN
 
 %type <astStatement>            Program
 
@@ -79,6 +81,8 @@ SPNodeC program;
 %type <astIfStatement>          IfStatement
 %type <astForStatement>         ForStatement
 %type <astWhileStatement>       WhileStatement
+%type <astBreakStatement>       BreakStatement
+%type <astContinueStatement>    ContinueStatement
 
 %type <astName>                 Name
 %type <astArgumentList>         ArgumentList
@@ -208,6 +212,10 @@ Statement
         { $$ = $1; }
     | WhileStatement
         { $$ = $1; }
+    | BreakStatement
+        { $$ = $1; }
+    | ContinueStatement
+        { $$ = $1; }
 
 ExpressionStatement
     : SEMICOLON
@@ -234,6 +242,14 @@ ForStatement
 WhileStatement
     : WHILE PAR_L Expression PAR_R Statement
         { $$ = new WhileStatement(SPExpressionC($3), SPStatementC($5)); }
+
+BreakStatement
+    : BREAK SEMICOLON
+        { $$ = new BreakStatement(); }
+
+ContinueStatement
+    : CONTINUE SEMICOLON
+        { $$ = new ContinueStatement(); }
 
 Name
     : IDENTIFIER
