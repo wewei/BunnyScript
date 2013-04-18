@@ -14,11 +14,6 @@ namespace Bunny {
         public:
             AST_CONCRETE_NODE_HEADER(ArgumentList)
 
-            ArgumentList()
-                : m_firstArgument()
-                , m_otherArguments()
-                { }
-
             ArgumentList(const SPExpressionC &firstArgument,
                          const SPArgumentListC &otherArguments)
                 : m_firstArgument(firstArgument)

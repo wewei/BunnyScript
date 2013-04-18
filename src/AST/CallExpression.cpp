@@ -30,10 +30,9 @@ AST_NODE_DEFINE_DUMMY_GenerateCode(CallExpression)
 void CallExpression::Print(TreePrinter &printer) const
 {
     printer.StartNode(String("CallExpression:"));
-    {
-        m_procedure->Print(printer);
+    m_procedure->Print(printer);
+    if (m_argumentList)
         m_argumentList->Print(printer);
-    }
     printer.EndNode();
 }
 

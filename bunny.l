@@ -101,6 +101,10 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "}"         { return BRC_R; }
 
+":"         { return COLON; }
+
+";"         { return SEMICOLON; }
+
 {Identifier}    {
             yylval.astString = new String(yytext);
             return IDENTIFIER;
@@ -111,7 +115,7 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
             BEGIN(X_STR);
             }
 
-[:space:]
+[[:space:]]
 
 <X_STR>\"   {
             yylval.astStringExpression = new StringExpression(stringBuffer);

@@ -16,6 +16,8 @@ SPNodeC program;
 %union {
     PStringC                astString;
     PNodeC                  astNode;
+
+    // Expressions
     PExpressionC            astExpression;
     PBooleanExpressionC     astBooleanExpression;
     PIntegerExpressionC     astIntegerExpression;
@@ -27,9 +29,18 @@ SPNodeC program;
     PCallExpressionC        astCallExpression;
     PAssignExpressionC      astAssignExpression;
     PAsyncExpressionC       astAsyncExpression;
+
+    // Statements
+    PStatementC             astStatement;
+    PExpressionStatementC   astExpressionStatement;
+    PBlockStatementC        astBlockStatement;
+
+    // Misc
     PNameC                  astName;
     PArgumentListC          astArgumentList;
     PLValueC                astLValue;
+    PStatementListC         astStatementList;
+
 }
 
 %token <astIntegerExpression>   INTEGER
@@ -46,18 +57,26 @@ SPNodeC program;
 %token BRC_L BRC_R
 %token ASYNC
 %token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
+%token COLON SEMICOLON
 
-%type <astExpression>       Program
-%type <astExpression>       Expression
-%type <astBinaryExpression> BinaryExpression
-%type <astUnaryExpression>  UnaryExpression
-%type <astMemberExpression> MemberExpression
-%type <astCallExpression>   CallExpression
-%type <astAssignExpression> AssignExpression
-%type <astAsyncExpression>  AsyncExpression
-%type <astName>             Name
-%type <astArgumentList>     ArgumentList
-%type <astLValue>           LValue
+%type <astStatement>            Program
+
+%type <astExpression>           Expression
+%type <astBinaryExpression>     BinaryExpression
+%type <astUnaryExpression>      UnaryExpression
+%type <astMemberExpression>     MemberExpression
+%type <astCallExpression>       CallExpression
+%type <astAssignExpression>     AssignExpression
+%type <astAsyncExpression>      AsyncExpression
+
+%type <astStatement>            Statement
+%type <astExpressionStatement>  ExpressionStatement
+%type <astBlockStatement>       BlockStatement
+
+%type <astName>                 Name
+%type <astArgumentList>         ArgumentList
+%type <astLValue>               LValue
+%type <astStatementList>        StatementList
 
 %right  ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %left   OR
@@ -76,8 +95,8 @@ SPNodeC program;
 
 %%
 Program
-    : Expression
-        { program = SPExpressionC($1); } 
+    : Statement
+        { program = SPStatementC($1); } 
 
 Expression
     : INTEGER
@@ -147,7 +166,7 @@ MemberExpression
 
 CallExpression
     : Expression PAR_L PAR_R
-        { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC(new ArgumentList())); }
+        { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC()); }
     | Expression PAR_L ArgumentList PAR_R
         { $$ = new CallExpression(SPExpressionC($1), SPArgumentListC($3)); }
 
@@ -167,19 +186,43 @@ AsyncExpression
     : ASYNC PAR_L Expression PAR_R
         { $$ = new AsyncExpression(SPExpressionC($3)); }
 
+Statement
+    : ExpressionStatement
+        { $$ = $1; }
+    | BlockStatement
+        { $$ = $1; }
+
+ExpressionStatement
+    : SEMICOLON
+        { $$ = new ExpressionStatement(SPExpressionC()); }
+    | Expression SEMICOLON
+        { $$ = new ExpressionStatement(SPExpressionC($1)); }
+
+BlockStatement
+    : BRC_L BRC_R
+        { $$ = new BlockStatement(SPStatementListC()); }
+    | BRC_L StatementList BRC_R
+        { $$ = new BlockStatement(SPStatementListC($2)); }
+
 Name
     : IDENTIFIER
         { $$ = new Name(SPStringC($1)); }
 
 ArgumentList
     : Expression
-        { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC(new ArgumentList())); }
+        { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC()); }
     | Expression COMMA ArgumentList
         { $$ = new ArgumentList(SPExpressionC($1), SPArgumentListC($3)); }
 
 LValue
     : MemberExpression
         { $$ = new LValue(SPExpressionC($1)); }
+
+StatementList
+    : Statement
+        { $$ = new StatementList(SPStatementC($1), SPStatementListC()); }
+    | Statement StatementList
+        { $$ = new StatementList(SPStatementC($1), SPStatementListC($2)); }
 
 %%
 
