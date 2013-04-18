@@ -35,6 +35,8 @@ SPNodeC program;
     PExpressionStatementC   astExpressionStatement;
     PBlockStatementC        astBlockStatement;
     PIfStatementC           astIfStatement;
+    PForStatementC          astForStatement;
+    PWhileStatementC        astWhileStatement;
 
     // Misc
     PNameC                  astName;
@@ -59,7 +61,7 @@ SPNodeC program;
 %token ASYNC
 %token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %token COLON SEMICOLON
-%token IF ELSE
+%token IF ELSE WHILE FOR IN
 
 %type <astStatement>            Program
 
@@ -75,6 +77,8 @@ SPNodeC program;
 %type <astExpressionStatement>  ExpressionStatement
 %type <astBlockStatement>       BlockStatement
 %type <astIfStatement>          IfStatement
+%type <astForStatement>         ForStatement
+%type <astWhileStatement>       WhileStatement
 
 %type <astName>                 Name
 %type <astArgumentList>         ArgumentList
@@ -200,6 +204,10 @@ Statement
         { $$ = $1; }
     | IfStatement
         { $$ = $1; }
+    | ForStatement
+        { $$ = $1; }
+    | WhileStatement
+        { $$ = $1; }
 
 ExpressionStatement
     : SEMICOLON
@@ -218,6 +226,14 @@ IfStatement
         { $$ = new IfStatement(SPExpressionC($3), SPStatementC($5), SPStatementC()); }
     | IF PAR_L Expression PAR_R Statement ELSE Statement
         { $$ = new IfStatement(SPExpressionC($3), SPStatementC($5), SPStatementC($7)); }
+
+ForStatement
+    : FOR PAR_L LValue IN Expression PAR_R Statement
+        { $$ = new ForStatement(SPLValueC($3), SPExpressionC($5), SPStatementC($7)); }
+
+WhileStatement
+    : WHILE PAR_L Expression PAR_R Statement
+        { $$ = new WhileStatement(SPExpressionC($3), SPStatementC($5)); }
 
 Name
     : IDENTIFIER

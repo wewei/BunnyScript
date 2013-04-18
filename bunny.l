@@ -89,6 +89,12 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "else"      { return ELSE; }
 
+"for"       { return FOR; }
+
+"in"        { return IN; }
+
+"while"     { return WHILE; }
+
 "."         { return DOT; }
 
 ","         { return COMMA; }

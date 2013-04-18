@@ -1,8 +1,11 @@
 {
     sum = 0;
-    {
+    for (i in xrange(0, a.length()))
         sum += a[i];
-    }
+    i = 0;
+    while (i < b.length())
+        sum += b[i];
+
     printf("%d", sum);
     if (sum > 100)
         if (sum > 1000)
