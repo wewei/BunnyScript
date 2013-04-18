@@ -25,6 +25,9 @@ namespace Bunny {
             BO_OR,
             BO_XOR,
 
+            // Subscript
+            BO_SUBS,
+
         } BinaryOperator;
 
         class BinaryExpression : public Expression {

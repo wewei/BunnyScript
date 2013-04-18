@@ -89,7 +89,7 @@ SPNodeC program;
 %left   MULTIPLY DIVIDE
 %left   POWER
 %right  UMINUS
-%left   PAR_L PAR_R DOT ASYNC
+%left   PAR_L PAR_R DOT ASYNC BRT_L BRT_R
 
 %start Program
 
@@ -151,6 +151,8 @@ BinaryExpression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_OR); }
     | Expression XOR Expression
         { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_XOR); }
+    | Expression BRT_L Expression BRT_R
+        { $$ = new BinaryExpression(SPExpressionC($1), SPExpressionC($3), BO_SUBS); }
 
 UnaryExpression
     : MINUS Expression %prec UMINUS

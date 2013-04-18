@@ -40,6 +40,8 @@ static const char *BinaryOperatorName(BinaryOperator oper)
         return "or <OR>";
     case BO_XOR:
         return "xor <XOR>";
+    case BO_SUBS:
+        return "[] <SUBS>";
     default:
         return "";
     }
