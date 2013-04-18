@@ -8,10 +8,10 @@ all : test
 $(LEX_FILE) : bunny.l bunny.tab.h
 	flex bunny.l
 bunny.tab.h bunny.tab.c : bunny.y
-	bison -d bunny.y
+	bison -v -d bunny.y
 
 clean: clean-test
-	rm -f bunny.tab.h bunny.tab.c $(LEX_FILE) bunny
+	rm -f bunny.tab.h bunny.tab.c bunny.output $(LEX_FILE) bunny
     
 test : test_ast
 

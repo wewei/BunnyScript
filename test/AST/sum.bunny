@@ -1,4 +1,13 @@
 {
-    sum += a[i];
+    sum = 0;
+    {
+        sum += a[i];
+    }
+    printf("%d", sum);
+    if (sum > 100)
+        if (sum > 1000)
+            print("Beyound boundary"); 
+        else
+            printf("Large number");
 }
-printf("%d", sum);
+        

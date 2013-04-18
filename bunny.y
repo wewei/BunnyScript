@@ -34,6 +34,7 @@ SPNodeC program;
     PStatementC             astStatement;
     PExpressionStatementC   astExpressionStatement;
     PBlockStatementC        astBlockStatement;
+    PIfStatementC           astIfStatement;
 
     // Misc
     PNameC                  astName;
@@ -58,6 +59,7 @@ SPNodeC program;
 %token ASYNC
 %token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %token COLON SEMICOLON
+%token IF ELSE
 
 %type <astStatement>            Program
 
@@ -72,24 +74,27 @@ SPNodeC program;
 %type <astStatement>            Statement
 %type <astExpressionStatement>  ExpressionStatement
 %type <astBlockStatement>       BlockStatement
+%type <astIfStatement>          IfStatement
 
 %type <astName>                 Name
 %type <astArgumentList>         ArgumentList
 %type <astLValue>               LValue
 %type <astStatementList>        StatementList
 
-%right  ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
-%left   OR
-%left   XOR
-%left   AND
-%left   NOT
-%left   EQ NE
-%left   LT LE GT GE
-%left   ADD MINUS
-%left   MULTIPLY DIVIDE
-%left   POWER
-%right  UMINUS
-%left   PAR_L PAR_R DOT ASYNC BRT_L BRT_R
+%nonassoc   THEN
+%nonassoc   ELSE
+%right      ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
+%left       OR
+%left       XOR
+%left       AND
+%left       NOT
+%left       EQ NE
+%left       LT LE GT GE
+%left       ADD MINUS
+%left       MULTIPLY DIVIDE
+%left       POWER
+%right      UMINUS
+%left       PAR_L PAR_R DOT ASYNC BRT_L BRT_R
 
 %start Program
 
@@ -193,6 +198,8 @@ Statement
         { $$ = $1; }
     | BlockStatement
         { $$ = $1; }
+    | IfStatement
+        { $$ = $1; }
 
 ExpressionStatement
     : SEMICOLON
@@ -205,6 +212,12 @@ BlockStatement
         { $$ = new BlockStatement(SPStatementListC()); }
     | BRC_L StatementList BRC_R
         { $$ = new BlockStatement(SPStatementListC($2)); }
+
+IfStatement
+    : IF PAR_L Expression PAR_R Statement   %prec THEN
+        { $$ = new IfStatement(SPExpressionC($3), SPStatementC($5), SPStatementC()); }
+    | IF PAR_L Expression PAR_R Statement ELSE Statement
+        { $$ = new IfStatement(SPExpressionC($3), SPStatementC($5), SPStatementC($7)); }
 
 Name
     : IDENTIFIER

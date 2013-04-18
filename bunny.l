@@ -85,6 +85,10 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
             return BOOLEAN;
             }
 
+"if"        { return IF; }
+
+"else"      { return ELSE; }
+
 "."         { return DOT; }
 
 ","         { return COMMA; }

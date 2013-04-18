@@ -15,5 +15,6 @@ Makefile.in
 bunny
 bunny.tab.c
 bunny.tab.h
+bunny.output
 lex.yy.c
 test_*
