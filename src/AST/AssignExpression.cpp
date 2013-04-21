@@ -11,7 +11,7 @@ AST_NODE_DEFINE_DUMMY_GenerateCode(LValue)
 
 void LValue::Print(TreePrinter &printer) const
 {
-    printer.StartNode(String("LValue"));
+    printer.StartNode(String("LValue:"));
     {
         m_exprChild->Print(printer);
     }
@@ -29,7 +29,7 @@ AST_NODE_DEFINE_DUMMY_GenerateCode(AssignExpression)
 
 void AssignExpression::Print(TreePrinter &printer) const
 {
-    printer.StartNode(String("AssignExpression"));
+    printer.StartNode(String("AssignExpression:"));
     {
         m_lvalue->Print(printer);
         m_exprValue->Print(printer);

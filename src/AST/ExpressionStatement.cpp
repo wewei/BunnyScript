@@ -6,6 +6,7 @@ AST_NODE_DEFAULT_DESTRUCTOR(ExpressionStatement)
 
 AST_NODE_DEFINE_DUMMY_GenerateCode(ExpressionStatement)
 
+#ifdef DEBUG
 void ExpressionStatement::Print(TreePrinter &printer) const
 {
     printer.StartNode(String("ExpressionStatement:"));
@@ -14,4 +15,5 @@ void ExpressionStatement::Print(TreePrinter &printer) const
     }
     printer.EndNode();
 }
+#endif // DEBUG
 

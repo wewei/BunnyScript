@@ -39,6 +39,11 @@ SPNodeC program;
     PWhileStatementC        astWhileStatement;
     PBreakStatementC        astBreakStatement;
     PContinueStatementC     astContinueStatement;
+    PDeclarationStatementC  astDeclarationStatement;
+
+    // Types
+    PTypeC                  astType;
+    PSimpleTypeC            astSimpleType;
 
     // Misc
     PNameC                  astName;
@@ -74,6 +79,8 @@ SPNodeC program;
 %type <astCallExpression>       CallExpression
 %type <astAssignExpression>     AssignExpression
 %type <astAsyncExpression>      AsyncExpression
+%type <astType>                 Type
+%type <astSimpleType>           SimpleType
 
 %type <astStatement>            Statement
 %type <astExpressionStatement>  ExpressionStatement
@@ -83,6 +90,7 @@ SPNodeC program;
 %type <astWhileStatement>       WhileStatement
 %type <astBreakStatement>       BreakStatement
 %type <astContinueStatement>    ContinueStatement
+%type <astDeclarationStatement> DeclarationStatement
 
 %type <astName>                 Name
 %type <astArgumentList>         ArgumentList
@@ -216,6 +224,8 @@ Statement
         { $$ = $1; }
     | ContinueStatement
         { $$ = $1; }
+    | DeclarationStatement
+        { $$ = $1; }
 
 ExpressionStatement
     : SEMICOLON
@@ -250,6 +260,22 @@ BreakStatement
 ContinueStatement
     : CONTINUE SEMICOLON
         { $$ = new ContinueStatement(); }
+
+DeclarationStatement
+    : Type Name SEMICOLON
+        { $$ = new DeclarationStatement(SPTypeC($1), SPNameC($2), SPExpressionC()); }
+    | Type Name ASSIGN Expression SEMICOLON
+        { $$ = new DeclarationStatement(SPTypeC($1), SPNameC($2), SPExpressionC($4)); }
+
+Type
+    : SimpleType
+        { $$ = $1; }
+
+SimpleType
+    : Name
+        { $$ = new SimpleType(SPTypeC(), SPNameC($1)); }
+    | Type COLON Name
+        { $$ = new SimpleType(SPTypeC($1), SPNameC($3)); }
 
 Name
     : IDENTIFIER
