@@ -1,6 +1,9 @@
 {
-    def int a = 1;
-    def int b = 2;
-    def x64:uint_64 c = a + b;
-    def ^int() x = ^int() { return 1; };
+    define int a = 1;
+    define int b = 2;
+    define x64:uint_64 c = a + b;
+
+    typedef ^int(int, int) BinOper;
+    define BinOper plus = ^int(int a, int b)
+        { return a + b; };
 }

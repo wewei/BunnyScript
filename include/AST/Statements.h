@@ -10,4 +10,5 @@
 #include "ContinueStatement.h"
 #include "DeclarationStatement.h"
 #include "ReturnStatement.h"
+#include "TypeDefineStatement.h"
 

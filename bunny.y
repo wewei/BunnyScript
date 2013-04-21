@@ -42,6 +42,7 @@ SPNodeC program;
     PContinueStatementC     astContinueStatement;
     PDeclarationStatementC  astDeclarationStatement;
     PReturnStatementC       astReturnStatement;
+    PTypeDefineStatementC   astTypeDefineStatement;
 
     // Types
     PTypeC                  astType;
@@ -74,7 +75,7 @@ SPNodeC program;
 %token ASYNC
 %token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %token COLON SEMICOLON
-%token IF ELSE WHILE FOR IN BREAK CONTINUE RETURN DEF
+%token IF ELSE WHILE FOR IN BREAK CONTINUE RETURN DEFINE TYPEDEF
 
 %type <astStatement>            Program
 
@@ -97,6 +98,7 @@ SPNodeC program;
 %type <astContinueStatement>    ContinueStatement
 %type <astDeclarationStatement> DeclarationStatement
 %type <astReturnStatement>      ReturnStatement
+%type <astTypeDefineStatement>  TypeDefineStatement
 
 %type <astName>                 Name
 %type <astType>                 Type
@@ -253,6 +255,8 @@ Statement
         { $$ = $1; }
     | ReturnStatement
         { $$ = $1; }
+    | TypeDefineStatement
+        { $$ = $1; }
 
 ExpressionStatement
     : SEMICOLON
@@ -289,9 +293,9 @@ ContinueStatement
         { $$ = new ContinueStatement(); }
 
 DeclarationStatement
-    : DEF Type Name SEMICOLON
+    : DEFINE Type Name SEMICOLON
         { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC()); }
-    | DEF Type Name ASSIGN Expression SEMICOLON
+    | DEFINE Type Name ASSIGN Expression SEMICOLON
         { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC($5)); }
 
 ReturnStatement
@@ -299,6 +303,10 @@ ReturnStatement
         { $$ = new ReturnStatement(SPExpressionC()); }
     | RETURN Expression SEMICOLON
         { $$ = new ReturnStatement(SPExpressionC($2)); }
+
+TypeDefineStatement
+    : TYPEDEF Type Name SEMICOLON
+        { $$ = new TypeDefineStatement(SPTypeC($2), SPNameC($3)); }
 
 Type
     : SimpleType

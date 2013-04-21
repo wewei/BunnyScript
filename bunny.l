@@ -101,7 +101,9 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "return"    { return RETURN; }
 
-"def"       { return DEF; }
+"define"    { return DEFINE; }
+
+"typedef"   { return TYPEDEF; }
 
 "."         { return DOT; }
 
