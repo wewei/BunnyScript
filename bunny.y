@@ -14,49 +14,49 @@ SPNodeC program;
 %}
 
 %union {
-    PStringC                astString;
-    PNodeC                  astNode;
+    PStringC                    astString;
+    PNodeC                      astNode;
 
     // Expressions
-    PExpressionC            astExpression;
-    PBooleanExpressionC     astBooleanExpression;
-    PIntegerExpressionC     astIntegerExpression;
-    PFloatExpressionC       astFloatExpression;
-    PStringExpressionC      astStringExpression;
-    PUnaryExpressionC       astUnaryExpression;
-    PBinaryExpressionC      astBinaryExpression;
-    PMemberExpressionC      astMemberExpression;
-    PCallExpressionC        astCallExpression;
-    PAssignExpressionC      astAssignExpression;
-    PAsyncExpressionC       astAsyncExpression;
-    PFunctionExpressionC    astFunctionExpression;
+    PExpressionC                astExpression;
+    PBooleanExpressionC         astBooleanExpression;
+    PIntegerExpressionC         astIntegerExpression;
+    PFloatExpressionC           astFloatExpression;
+    PStringExpressionC          astStringExpression;
+    PUnaryExpressionC           astUnaryExpression;
+    PBinaryExpressionC          astBinaryExpression;
+    PMemberExpressionC          astMemberExpression;
+    PCallExpressionC            astCallExpression;
+    PAssignExpressionC          astAssignExpression;
+    PAsyncExpressionC           astAsyncExpression;
+    PFunctionExpressionC        astFunctionExpression;
 
     // Statements
-    PStatementC             astStatement;
-    PExpressionStatementC   astExpressionStatement;
-    PBlockStatementC        astBlockStatement;
-    PIfStatementC           astIfStatement;
-    PForStatementC          astForStatement;
-    PWhileStatementC        astWhileStatement;
-    PBreakStatementC        astBreakStatement;
-    PContinueStatementC     astContinueStatement;
-    PDeclarationStatementC  astDeclarationStatement;
-    PReturnStatementC       astReturnStatement;
-    PTypeDefineStatementC   astTypeDefineStatement;
+    PStatementC                 astStatement;
+    PExpressionStatementC       astExpressionStatement;
+    PBlockStatementC            astBlockStatement;
+    PIfStatementC               astIfStatement;
+    PForStatementC              astForStatement;
+    PWhileStatementC            astWhileStatement;
+    PBreakStatementC            astBreakStatement;
+    PContinueStatementC         astContinueStatement;
+    PVariableDefineStatementC   astVariableDefineStatement;
+    PReturnStatementC           astReturnStatement;
+    PTypeDefineStatementC       astTypeDefineStatement;
 
     // Types
-    PTypeC                  astType;
-    PSimpleTypeC            astSimpleType;
-    PSpecializedTypeC       astSpecializedType;
-    PFunctionTypeC          astFunctionType;
+    PTypeC                      astType;
+    PSimpleTypeC                astSimpleType;
+    PSpecializedTypeC           astSpecializedType;
+    PFunctionTypeC              astFunctionType;
 
     // Misc
-    PNameC                  astName;
-    PArgumentListC          astArgumentList;
-    PLValueC                astLValue;
-    PStatementListC         astStatementList;
-    PTypeListC              astTypeList;
-    PParameterListC         astParameterList;
+    PNameC                      astName;
+    PArgumentListC              astArgumentList;
+    PLValueC                    astLValue;
+    PStatementListC             astStatementList;
+    PTypeListC                  astTypeList;
+    PParameterListC             astParameterList;
 
 }
 
@@ -77,40 +77,40 @@ SPNodeC program;
 %token COLON SEMICOLON
 %token IF ELSE WHILE FOR IN BREAK CONTINUE RETURN DEFINE TYPEDEF
 
-%type <astStatement>            Program
+%type <astStatement>                Program
 
-%type <astExpression>           Expression
-%type <astBinaryExpression>     BinaryExpression
-%type <astUnaryExpression>      UnaryExpression
-%type <astMemberExpression>     MemberExpression
-%type <astCallExpression>       CallExpression
-%type <astAssignExpression>     AssignExpression
-%type <astAsyncExpression>      AsyncExpression
-%type <astFunctionExpression>   FunctionExpression
+%type <astExpression>               Expression
+%type <astBinaryExpression>         BinaryExpression
+%type <astUnaryExpression>          UnaryExpression
+%type <astMemberExpression>         MemberExpression
+%type <astCallExpression>           CallExpression
+%type <astAssignExpression>         AssignExpression
+%type <astAsyncExpression>          AsyncExpression
+%type <astFunctionExpression>       FunctionExpression
 
-%type <astStatement>            Statement
-%type <astExpressionStatement>  ExpressionStatement
-%type <astBlockStatement>       BlockStatement
-%type <astIfStatement>          IfStatement
-%type <astForStatement>         ForStatement
-%type <astWhileStatement>       WhileStatement
-%type <astBreakStatement>       BreakStatement
-%type <astContinueStatement>    ContinueStatement
-%type <astDeclarationStatement> DeclarationStatement
-%type <astReturnStatement>      ReturnStatement
-%type <astTypeDefineStatement>  TypeDefineStatement
+%type <astStatement>                Statement
+%type <astExpressionStatement>      ExpressionStatement
+%type <astBlockStatement>           BlockStatement
+%type <astIfStatement>              IfStatement
+%type <astForStatement>             ForStatement
+%type <astWhileStatement>           WhileStatement
+%type <astBreakStatement>           BreakStatement
+%type <astContinueStatement>        ContinueStatement
+%type <astVariableDefineStatement>  VariableDefineStatement
+%type <astReturnStatement>          ReturnStatement
+%type <astTypeDefineStatement>      TypeDefineStatement
 
-%type <astName>                 Name
-%type <astType>                 Type
-%type <astSimpleType>           SimpleType
-%type <astSpecializedType>      SpecializedType
-%type <astFunctionType>         FunctionType
+%type <astName>                     Name
+%type <astType>                     Type
+%type <astSimpleType>               SimpleType
+%type <astSpecializedType>          SpecializedType
+%type <astFunctionType>             FunctionType
 
-%type <astArgumentList>         ArgumentList
-%type <astLValue>               LValue
-%type <astStatementList>        StatementList
-%type <astTypeList>             TypeList
-%type <astParameterList>        ParameterList
+%type <astArgumentList>             ArgumentList
+%type <astLValue>                   LValue
+%type <astStatementList>            StatementList
+%type <astTypeList>                 TypeList
+%type <astParameterList>            ParameterList
 
 %nonassoc   THEN
 %nonassoc   ELSE
@@ -251,7 +251,7 @@ Statement
         { $$ = $1; }
     | ContinueStatement
         { $$ = $1; }
-    | DeclarationStatement
+    | VariableDefineStatement
         { $$ = $1; }
     | ReturnStatement
         { $$ = $1; }
@@ -292,11 +292,11 @@ ContinueStatement
     : CONTINUE SEMICOLON
         { $$ = new ContinueStatement(); }
 
-DeclarationStatement
+VariableDefineStatement
     : DEFINE Type Name SEMICOLON
-        { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC()); }
+        { $$ = new VariableDefineStatement(SPTypeC($2), SPNameC($3), SPExpressionC()); }
     | DEFINE Type Name ASSIGN Expression SEMICOLON
-        { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC($5)); }
+        { $$ = new VariableDefineStatement(SPTypeC($2), SPNameC($3), SPExpressionC($5)); }
 
 ReturnStatement
     : RETURN SEMICOLON

@@ -8,7 +8,7 @@
 #include "WhileStatement.h"
 #include "BreakStatement.h"
 #include "ContinueStatement.h"
-#include "DeclarationStatement.h"
+#include "VariableDefineStatement.h"
 #include "ReturnStatement.h"
 #include "TypeDefineStatement.h"
 

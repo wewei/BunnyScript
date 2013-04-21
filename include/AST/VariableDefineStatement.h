@@ -9,13 +9,13 @@
 
 namespace Bunny {
     namespace AST {
-        class DeclarationStatement : public Statement {
+        class VariableDefineStatement : public Statement {
         public:
-            AST_CONCRETE_NODE_HEADER(DeclarationStatement)
+            AST_CONCRETE_NODE_HEADER(VariableDefineStatement)
 
-            DeclarationStatement(const SPTypeC &type,
-                                 const SPNameC &varName,
-                                 const SPExpressionC &initValue)
+            VariableDefineStatement(const SPTypeC &type,
+                                    const SPNameC &varName,
+                                    const SPExpressionC &initValue)
                 : m_type(type)
                 , m_varName(varName)
                 , m_initValue(initValue)
@@ -36,7 +36,7 @@ namespace Bunny {
             SPExpressionC m_initValue;
         };
 
-        DEFINE_PTRS(DeclarationStatement)
+        DEFINE_PTRS(VariableDefineStatement)
     }
 }
 
