@@ -101,6 +101,8 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "return"    { return RETURN; }
 
+"def"       { return DEF; }
+
 "."         { return DOT; }
 
 ","         { return COMMA; }
@@ -120,6 +122,8 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 ":"         { return COLON; }
 
 ";"         { return SEMICOLON; }
+
+"@"         { return AT; }
 
 {Identifier}    {
             yylval.astString = new String(yytext);

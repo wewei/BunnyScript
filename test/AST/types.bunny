@@ -1,5 +1,5 @@
 {
-    int a = 1;
-    int b = 2;
-    x64:uint_64 c = a + b;
+    def int a = 1;
+    def int b = 2;
+    def x64:uint_64 c = a + b;
 }

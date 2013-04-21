@@ -44,12 +44,14 @@ SPNodeC program;
     // Types
     PTypeC                  astType;
     PSimpleTypeC            astSimpleType;
+    PSpecializedTypeC       astSpecializedType;
 
     // Misc
     PNameC                  astName;
     PArgumentListC          astArgumentList;
     PLValueC                astLValue;
     PStatementListC         astStatementList;
+    PTypeListC              astTypeList;
 
 }
 
@@ -61,14 +63,14 @@ SPNodeC program;
 %token ADD MINUS MULTIPLY DIVIDE POWER
 %token LT LE GT GE EQ NE
 %token NOT AND OR XOR
-%token DOT COMMA
+%token DOT COMMA AT
 %token PAR_L PAR_R
 %token BRT_L BRT_R
 %token BRC_L BRC_R
 %token ASYNC
 %token ASSIGN ADD_ASSIGN MINUS_ASSIGN MULTIPLY_ASSIGN DIVIDE_ASSIGN
 %token COLON SEMICOLON
-%token IF ELSE WHILE FOR IN BREAK CONTINUE RETURN
+%token IF ELSE WHILE FOR IN BREAK CONTINUE RETURN DEF
 
 %type <astStatement>            Program
 
@@ -79,8 +81,6 @@ SPNodeC program;
 %type <astCallExpression>       CallExpression
 %type <astAssignExpression>     AssignExpression
 %type <astAsyncExpression>      AsyncExpression
-%type <astType>                 Type
-%type <astSimpleType>           SimpleType
 
 %type <astStatement>            Statement
 %type <astExpressionStatement>  ExpressionStatement
@@ -93,9 +93,14 @@ SPNodeC program;
 %type <astDeclarationStatement> DeclarationStatement
 
 %type <astName>                 Name
+%type <astType>                 Type
+%type <astSimpleType>           SimpleType
+%type <astSpecializedType>      SpecializedType
+
 %type <astArgumentList>         ArgumentList
 %type <astLValue>               LValue
 %type <astStatementList>        StatementList
+%type <astTypeList>             TypeList
 
 %nonassoc   THEN
 %nonassoc   ELSE
@@ -262,13 +267,15 @@ ContinueStatement
         { $$ = new ContinueStatement(); }
 
 DeclarationStatement
-    : Type Name SEMICOLON
-        { $$ = new DeclarationStatement(SPTypeC($1), SPNameC($2), SPExpressionC()); }
-    | Type Name ASSIGN Expression SEMICOLON
-        { $$ = new DeclarationStatement(SPTypeC($1), SPNameC($2), SPExpressionC($4)); }
+    : DEF Type Name SEMICOLON
+        { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC()); }
+    | DEF Type Name ASSIGN Expression SEMICOLON
+        { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC($5)); }
 
 Type
     : SimpleType
+        { $$ = $1; }
+    | SpecializedType
         { $$ = $1; }
 
 SimpleType
@@ -276,6 +283,12 @@ SimpleType
         { $$ = new SimpleType(SPTypeC(), SPNameC($1)); }
     | Type COLON Name
         { $$ = new SimpleType(SPTypeC($1), SPNameC($3)); }
+
+SpecializedType
+    : Type LT GT
+        { $$ = new SpecializedType(SPTypeC($1), SPTypeListC()); }
+    | Type LT TypeList GT
+        { $$ = new SpecializedType(SPTypeC($1), SPTypeListC($3)); }
 
 Name
     : IDENTIFIER
@@ -296,6 +309,13 @@ StatementList
         { $$ = new StatementList(SPStatementC($1), SPStatementListC()); }
     | Statement StatementList
         { $$ = new StatementList(SPStatementC($1), SPStatementListC($2)); }
+
+TypeList
+    : Type
+        { $$ = new TypeList(SPTypeC($1), SPTypeListC()); }
+    | Type COMMA TypeList
+        { $$ = new TypeList(SPTypeC($1), SPTypeListC($3)); }
+
 
 %%
 
