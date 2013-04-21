@@ -41,7 +41,7 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 
 "/"         { return DIVIDE; }
 
-"^"         { return POWER; }
+"**"        { return POWER; }
 
 "<"         { return LT; }
 
@@ -124,6 +124,8 @@ Identifier  [_a-zA-Z$][_a-zA-Z0-9$]*
 ";"         { return SEMICOLON; }
 
 "@"         { return AT; }
+
+"^"         { return CARET; }
 
 {Identifier}    {
             yylval.astString = new String(yytext);

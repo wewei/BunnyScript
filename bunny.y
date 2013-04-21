@@ -29,6 +29,7 @@ SPNodeC program;
     PCallExpressionC        astCallExpression;
     PAssignExpressionC      astAssignExpression;
     PAsyncExpressionC       astAsyncExpression;
+    PFunctionExpressionC    astFunctionExpression;
 
     // Statements
     PStatementC             astStatement;
@@ -40,6 +41,7 @@ SPNodeC program;
     PBreakStatementC        astBreakStatement;
     PContinueStatementC     astContinueStatement;
     PDeclarationStatementC  astDeclarationStatement;
+    PReturnStatementC       astReturnStatement;
 
     // Types
     PTypeC                  astType;
@@ -52,6 +54,7 @@ SPNodeC program;
     PLValueC                astLValue;
     PStatementListC         astStatementList;
     PTypeListC              astTypeList;
+    PParameterListC         astParameterList;
 
 }
 
@@ -63,7 +66,7 @@ SPNodeC program;
 %token ADD MINUS MULTIPLY DIVIDE POWER
 %token LT LE GT GE EQ NE
 %token NOT AND OR XOR
-%token DOT COMMA AT
+%token DOT COMMA AT CARET
 %token PAR_L PAR_R
 %token BRT_L BRT_R
 %token BRC_L BRC_R
@@ -81,6 +84,7 @@ SPNodeC program;
 %type <astCallExpression>       CallExpression
 %type <astAssignExpression>     AssignExpression
 %type <astAsyncExpression>      AsyncExpression
+%type <astFunctionExpression>   FunctionExpression
 
 %type <astStatement>            Statement
 %type <astExpressionStatement>  ExpressionStatement
@@ -91,6 +95,7 @@ SPNodeC program;
 %type <astBreakStatement>       BreakStatement
 %type <astContinueStatement>    ContinueStatement
 %type <astDeclarationStatement> DeclarationStatement
+%type <astReturnStatement>      ReturnStatement
 
 %type <astName>                 Name
 %type <astType>                 Type
@@ -101,6 +106,7 @@ SPNodeC program;
 %type <astLValue>               LValue
 %type <astStatementList>        StatementList
 %type <astTypeList>             TypeList
+%type <astParameterList>        ParameterList
 
 %nonassoc   THEN
 %nonassoc   ELSE
@@ -144,6 +150,8 @@ Expression
     | AssignExpression
         { $$ = $1; }
     | AsyncExpression
+        { $$ = $1; }
+    | FunctionExpression
         { $$ = $1; }
     | PAR_L Expression PAR_R
         { $$ = $2; }
@@ -214,6 +222,16 @@ AsyncExpression
     : ASYNC PAR_L Expression PAR_R
         { $$ = new AsyncExpression(SPExpressionC($3)); }
 
+FunctionExpression
+    : CARET PAR_L PAR_R Statement
+        { $$ = new FunctionExpression(SPTypeC(), SPParameterListC(), SPStatementC($4)); }
+    | CARET PAR_L ParameterList PAR_R Statement
+        { $$ = new FunctionExpression(SPTypeC(), SPParameterListC($3), SPStatementC($5)); }
+    | CARET Type PAR_L PAR_R Statement
+        { $$ = new FunctionExpression(SPTypeC($2), SPParameterListC(), SPStatementC($5)); }
+    | CARET Type PAR_L ParameterList PAR_R Statement
+        { $$ = new FunctionExpression(SPTypeC($2), SPParameterListC($4), SPStatementC($6)); }
+
 Statement
     : ExpressionStatement
         { $$ = $1; }
@@ -230,6 +248,8 @@ Statement
     | ContinueStatement
         { $$ = $1; }
     | DeclarationStatement
+        { $$ = $1; }
+    | ReturnStatement
         { $$ = $1; }
 
 ExpressionStatement
@@ -271,6 +291,12 @@ DeclarationStatement
         { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC()); }
     | DEF Type Name ASSIGN Expression SEMICOLON
         { $$ = new DeclarationStatement(SPTypeC($2), SPNameC($3), SPExpressionC($5)); }
+
+ReturnStatement
+    : RETURN SEMICOLON
+        { $$ = new ReturnStatement(SPExpressionC()); }
+    | RETURN Expression SEMICOLON
+        { $$ = new ReturnStatement(SPExpressionC($2)); }
 
 Type
     : SimpleType
@@ -315,6 +341,12 @@ TypeList
         { $$ = new TypeList(SPTypeC($1), SPTypeListC()); }
     | Type COMMA TypeList
         { $$ = new TypeList(SPTypeC($1), SPTypeListC($3)); }
+
+ParameterList
+    : Type Name
+        { $$ = new ParameterList(SPTypeC($1), SPNameC($2), SPParameterListC()); }
+    | Type Name COMMA ParameterList
+        { $$ = new ParameterList(SPTypeC($1), SPNameC($2), SPParameterListC($4)); }
 
 
 %%

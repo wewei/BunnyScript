@@ -8,4 +8,5 @@
 #include "CallExpression.h"
 #include "AssignExpression.h"
 #include "AsyncExpression.h"
+#include "FunctionExpression.h"
 
