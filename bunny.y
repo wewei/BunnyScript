@@ -47,6 +47,7 @@ SPNodeC program;
     PTypeC                  astType;
     PSimpleTypeC            astSimpleType;
     PSpecializedTypeC       astSpecializedType;
+    PFunctionTypeC          astFunctionType;
 
     // Misc
     PNameC                  astName;
@@ -101,6 +102,7 @@ SPNodeC program;
 %type <astType>                 Type
 %type <astSimpleType>           SimpleType
 %type <astSpecializedType>      SpecializedType
+%type <astFunctionType>         FunctionType
 
 %type <astArgumentList>         ArgumentList
 %type <astLValue>               LValue
@@ -303,6 +305,8 @@ Type
         { $$ = $1; }
     | SpecializedType
         { $$ = $1; }
+    | FunctionType
+        { $$ = $1; }
 
 SimpleType
     : Name
@@ -315,6 +319,16 @@ SpecializedType
         { $$ = new SpecializedType(SPTypeC($1), SPTypeListC()); }
     | Type LT TypeList GT
         { $$ = new SpecializedType(SPTypeC($1), SPTypeListC($3)); }
+
+FunctionType
+    : CARET PAR_L PAR_R
+        { $$ = new FunctionType(SPTypeC(), SPTypeListC()); }
+    | CARET PAR_L TypeList PAR_R
+        { $$ = new FunctionType(SPTypeC(), SPTypeListC($3)); }
+    | CARET Type PAR_L PAR_R
+        { $$ = new FunctionType(SPTypeC($2), SPTypeListC()); }
+    | CARET Type PAR_L TypeList PAR_R
+        { $$ = new FunctionType(SPTypeC($2), SPTypeListC($4)); }
 
 Name
     : IDENTIFIER

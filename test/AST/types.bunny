@@ -2,5 +2,5 @@
     def int a = 1;
     def int b = 2;
     def x64:uint_64 c = a + b;
-    x = ^int() { return 1; };
+    def ^int() x = ^int() { return 1; };
 }
